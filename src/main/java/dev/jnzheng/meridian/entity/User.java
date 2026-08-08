@@ -1,4 +1,4 @@
-package dev.jnzheng.meridian;
+package dev.jnzheng.meridian.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
