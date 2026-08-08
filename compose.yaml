@@ -4,9 +4,9 @@ services:
     environment:
       - 'POSTGRES_DB=meridian'
       - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_USER=meridianAdmin'
     ports:
-      - '5432'
+      - '52327:5432'
   redis:
     image: 'redis:latest'
     ports:
