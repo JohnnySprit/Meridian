@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+alpaca.properties
+
 ### Local / secrets ###
 .env
 .env.*

@@ -22,4 +22,9 @@ public class User {
 
     private Instant createdAt;
 
+    public User(String email, Instant createdAt){
+        this.email = email;
+        this.createdAt = createdAt;
+    }
+    public User(){}
 }
