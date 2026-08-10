@@ -1,4 +1,4 @@
-package dev.jnzheng.meridian;
+package dev.jnzheng.meridian.alpaca;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
