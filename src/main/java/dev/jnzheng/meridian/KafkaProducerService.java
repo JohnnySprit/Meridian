@@ -28,10 +28,4 @@ public class KafkaProducerService {
                     }
                 });
     }
-
-    @PostConstruct
-    public void checkPriceTick(){
-        PriceTick priceTick = new PriceTick("AMZN", new BigDecimal("100.00"), Instant.now());
-        sendMessage("AMZN", priceTick);
-    }
 }
