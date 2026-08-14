@@ -1,6 +1,5 @@
 package dev.jnzheng.meridian;
 
-import dev.jnzheng.meridian.alpaca.oauth.AlpacaOAuthProperties;
 import dev.jnzheng.meridian.repository.AlpacaCredentialsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -19,7 +18,7 @@ public class PositionService {
     public PositionService(AlpacaCredentialsRepository credentialsRepository) {
         this.credentialsRepository = credentialsRepository;
     }
-
+    // TODO: encrypt/decrypt before deploy
     public String getPositions(UUID userId) {
         var credentials = credentialsRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException(

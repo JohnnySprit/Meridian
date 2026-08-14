@@ -10,6 +10,7 @@ import markets.alpaca.client.TradingApiEnvironment;
 import markets.alpaca.client.data.StockTradesRequest;
 import markets.alpaca.client.openapi.data.model.StockHistoricalFeed;
 
+//connection test/blueprint
 public class AlpacaConnection {
     public static void main(String[] args) throws Exception {
         var props = new Properties();
