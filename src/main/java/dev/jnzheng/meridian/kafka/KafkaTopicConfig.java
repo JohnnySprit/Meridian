@@ -1,4 +1,4 @@
-package dev.jnzheng.meridian;
+package dev.jnzheng.meridian.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;

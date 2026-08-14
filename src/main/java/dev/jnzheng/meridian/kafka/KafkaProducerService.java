@@ -1,19 +1,19 @@
-package dev.jnzheng.meridian;
+package dev.jnzheng.meridian.kafka;
 
-import jakarta.annotation.PostConstruct;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
-import java.time.Instant;
 
 
 @Service
 public class KafkaProducerService {
 
     private final KafkaTemplate<String, PriceTick> kafkaTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public KafkaProducerService(KafkaTemplate<String, PriceTick> kafkaTemplate) {
+    public KafkaProducerService(KafkaTemplate<String, PriceTick> kafkaTemplate, RedisTemplate redisTemplate) {
         this.kafkaTemplate = kafkaTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     //appends value to 'price-updates' keyed by 'key'.

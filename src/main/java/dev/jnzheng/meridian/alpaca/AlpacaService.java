@@ -1,7 +1,7 @@
 package dev.jnzheng.meridian.alpaca;
 
-import dev.jnzheng.meridian.KafkaProducerService;
-import dev.jnzheng.meridian.PriceTick;
+import dev.jnzheng.meridian.kafka.KafkaProducerService;
+import dev.jnzheng.meridian.kafka.PriceTick;
 import markets.alpaca.client.AlpacaClient;
 import markets.alpaca.client.data.StockTradesRequest;
 import markets.alpaca.client.openapi.data.http.ApiException;
@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class AlpacaService {

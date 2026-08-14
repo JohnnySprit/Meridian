@@ -1,4 +1,4 @@
-package dev.jnzheng.meridian;
+package dev.jnzheng.meridian.kafka;
 
 import java.math.BigDecimal;
 import java.time.Instant;
