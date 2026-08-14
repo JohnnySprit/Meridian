@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 public class KafkaProducerService {
 
     private final KafkaTemplate<String, PriceTick> kafkaTemplate;
-    private final RedisTemplate<String, String> redisTemplate;
 
-    public KafkaProducerService(KafkaTemplate<String, PriceTick> kafkaTemplate, RedisTemplate redisTemplate) {
+    public KafkaProducerService(KafkaTemplate<String, PriceTick> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
-        this.redisTemplate = redisTemplate;
     }
 
     //appends value to 'price-updates' keyed by 'key'.
