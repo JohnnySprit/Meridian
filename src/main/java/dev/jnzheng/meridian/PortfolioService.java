@@ -3,7 +3,6 @@ package dev.jnzheng.meridian;
 import dev.jnzheng.meridian.alpaca.AlpacaPosition;
 import dev.jnzheng.meridian.alpaca.AlpacaService;
 import markets.alpaca.client.openapi.data.http.ApiException;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -17,18 +16,15 @@ import java.util.UUID;
 @Service
 public class PortfolioService {
     private final PositionService positionService;
-    private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final AlpacaService alpacaService;
 
     public PortfolioService(
             PositionService positionService,
-            StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
             AlpacaService alpacaService
     ) {
         this.positionService = positionService;
-        this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.alpacaService = alpacaService;
     }
@@ -44,13 +40,14 @@ public class PortfolioService {
         );
 
         for (AlpacaPosition p : positions) {
-            String priceStr = stringRedisTemplate.opsForValue().get("price:" + p.symbol());
-            if (priceStr == null) {
+            if (p.market_value() == null) {
                 continue;
             }
-            BigDecimal price = new BigDecimal(priceStr);
-            BigDecimal marketValue = p.qty().multiply(price);
-            BigDecimal pnl = marketValue.subtract(p.cost_basis());
+            BigDecimal marketValue = p.market_value();
+            BigDecimal pnl = BigDecimal.ZERO;
+            if (p.unrealized_pl() != null) {
+                pnl = p.unrealized_pl();
+            }
             totalValue = totalValue.add(marketValue);
             totalPnl = totalPnl.add(pnl);
             valued.add(new ValuedPosition(marketValue, volatilityFor(p.symbol())));
