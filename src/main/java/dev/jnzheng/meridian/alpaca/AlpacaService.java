@@ -1,15 +1,11 @@
 package dev.jnzheng.meridian.alpaca;
 
-import dev.jnzheng.meridian.kafka.KafkaProducerService;
-import dev.jnzheng.meridian.kafka.PriceTick;
 import markets.alpaca.client.AlpacaClient;
-import markets.alpaca.client.data.StockTradesRequest;
 import markets.alpaca.client.openapi.data.api.StockApi;
 import markets.alpaca.client.openapi.data.http.ApiException;
 import markets.alpaca.client.openapi.data.model.StockBar;
 import markets.alpaca.client.openapi.data.model.StockBarsRespSingle;
 import markets.alpaca.client.openapi.data.model.StockHistoricalFeed;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,15 +16,9 @@ import java.util.List;
 @Service
 public class AlpacaService {
 
-    private final AlpacaClient alpacaClient;
-    private final KafkaProducerService kafkaProducerService;
     private final StockApi stockApi;
-    private String[] tickers = {"AMZN", "AAPL", "AMPX"};
 
-
-    public AlpacaService(AlpacaClient alpacaClient, KafkaProducerService kafkaProducerService) {
-        this.alpacaClient = alpacaClient;
-        this.kafkaProducerService = kafkaProducerService;
+    public AlpacaService(AlpacaClient alpacaClient) {
         this.stockApi = new StockApi(alpacaClient.newDataClient());
     }
 
@@ -60,21 +50,5 @@ public class AlpacaService {
             }
         }
         return closes;
-    }
-
-    @Scheduled(fixedRate = 15000)
-    public void peekPrices() throws ApiException {
-        for (int i = 0; i < tickers.length; ++i){
-            var response = alpacaClient.stocks()
-                    .tradesForSymbol(StockTradesRequest.builder()
-                            .symbols(tickers[i])
-                            .feed(StockHistoricalFeed.IEX)
-                            .limit(1)
-                            .build()
-                    );
-            var trade = response.getTrades().get(0);
-            PriceTick tick = new PriceTick(tickers[i], BigDecimal.valueOf(trade.getP()), trade.getT().toInstant());
-            kafkaProducerService.sendMessage(tickers[i], tick);
-        }
     }
 }
