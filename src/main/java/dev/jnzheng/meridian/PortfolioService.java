@@ -18,15 +18,18 @@ public class PortfolioService {
     private final PositionService positionService;
     private final ObjectMapper objectMapper;
     private final AlpacaService alpacaService;
+    private final AnalysisService analysisService;
 
     public PortfolioService(
             PositionService positionService,
             ObjectMapper objectMapper,
-            AlpacaService alpacaService
+            AlpacaService alpacaService,
+            AnalysisService analysisService
     ) {
         this.positionService = positionService;
         this.objectMapper = objectMapper;
         this.alpacaService = alpacaService;
+        this.analysisService = analysisService;
     }
 
     public PortfolioSummary getSummary(UUID userId) {
@@ -77,6 +80,15 @@ public class PortfolioService {
 
         BigDecimal volatility = weightedVolatility(valued, totalValue);
         List<Headline> headlines = alpacaService.headlines(symbols);
+        String analysis = analysisService.analyze(
+                lines,
+                totalValue,
+                totalPnl,
+                volatility,
+                largestSymbol,
+                largestWeight,
+                headlines
+        );
         return new PortfolioSummary(
                 totalValue,
                 totalPnl,
@@ -84,7 +96,8 @@ public class PortfolioService {
                 largestSymbol,
                 largestWeight,
                 lines,
-                headlines
+                headlines,
+                analysis
         );
     }
 

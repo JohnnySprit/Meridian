@@ -10,5 +10,6 @@ public record PortfolioSummary(
         String largestPositionSymbol,
         BigDecimal largestPositionWeight,
         List<PositionLine> positions,
-        List<Headline> headlines
+        List<Headline> headlines,
+        String analysis
 ) {}
