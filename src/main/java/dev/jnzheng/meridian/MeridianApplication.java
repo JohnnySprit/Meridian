@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({AlpacaOAuthProperties.class, AlpacaProperties.class})
+@EnableConfigurationProperties({AlpacaOAuthProperties.class, AlpacaProperties.class, OpenAiProperties.class})
 public class MeridianApplication {
 
 	public static void main(String[] args) {
