@@ -32,7 +32,7 @@ public class PortfolioService {
     public PortfolioSummary getSummary(UUID userId) {
         BigDecimal totalValue = BigDecimal.ZERO;
         BigDecimal totalPnl = BigDecimal.ZERO;
-        List<ValuedPosition> valued = new ArrayList<>();
+        List<HeldLot> lots = new ArrayList<>();
         List<AlpacaPosition> positions = objectMapper.readValue(
                 positionService.getPositions(userId),
                 new TypeReference<List<AlpacaPosition>>() {
@@ -50,10 +50,42 @@ public class PortfolioService {
             }
             totalValue = totalValue.add(marketValue);
             totalPnl = totalPnl.add(pnl);
-            valued.add(new ValuedPosition(marketValue, volatilityFor(p.symbol())));
+            lots.add(new HeldLot(p.symbol(), p.qty(), marketValue, pnl, volatilityFor(p.symbol())));
         }
 
-        return new PortfolioSummary(totalValue, totalPnl, weightedVolatility(valued, totalValue));
+        List<PositionLine> lines = new ArrayList<>();
+        List<ValuedPosition> valued = new ArrayList<>();
+        List<String> symbols = new ArrayList<>();
+        String largestSymbol = null;
+        BigDecimal largestWeight = null;
+        for (int i = 0; i < lots.size(); i++) {
+            HeldLot lot = lots.get(i);
+            BigDecimal weight = null;
+            if (totalValue.signum() != 0) {
+                weight = lot.marketValue().divide(totalValue, 8, RoundingMode.HALF_UP);
+            }
+            if (weight != null) {
+                if (largestWeight == null || weight.compareTo(largestWeight) > 0) {
+                    largestWeight = weight;
+                    largestSymbol = lot.symbol();
+                }
+            }
+            lines.add(new PositionLine(lot.symbol(), lot.qty(), lot.marketValue(), lot.pnl(), weight));
+            valued.add(new ValuedPosition(lot.marketValue(), lot.volatility()));
+            symbols.add(lot.symbol());
+        }
+
+        BigDecimal volatility = weightedVolatility(valued, totalValue);
+        List<Headline> headlines = alpacaService.headlines(symbols);
+        return new PortfolioSummary(
+                totalValue,
+                totalPnl,
+                volatility,
+                largestSymbol,
+                largestWeight,
+                lines,
+                headlines
+        );
     }
 
     private BigDecimal volatilityFor(String symbol) {
@@ -86,6 +118,14 @@ public class PortfolioService {
     }
 
     private record ValuedPosition(BigDecimal marketValue, BigDecimal volatility) {}
+
+    private record HeldLot(
+            String symbol,
+            BigDecimal qty,
+            BigDecimal marketValue,
+            BigDecimal pnl,
+            BigDecimal volatility
+    ) {}
 
     //calculates individual stock historical volatility from daily prices.
     static BigDecimal volatility(List<BigDecimal> dailyPrices) {
