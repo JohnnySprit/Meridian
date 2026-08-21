@@ -88,6 +88,7 @@ public class AnalysisService {
                 + "Use only the real numbers and real headlines provided, do not fabricate any numbers or headlines from your training. "
                 + "If any one position is overexposing the account, then mention it. "
                 + "Cite headlines by quoting a few words. "
+                + "If there are no headlines/information for a stock in the portfolio, mention that. "
                 + "Two or three short paragraphs. No bullet lists of tickers the user already sees.";
     }
 
